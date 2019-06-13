@@ -155,12 +155,12 @@ for(i in 1:length(ion_name)){
   assign(paste0("g", as.character(i)), g)
   rm(tmp_data)
 }
-pdf("../data/plot/overview/ionome_distribution_C1.pdf", width = 10, height = 7)
+pdf("../data/plot/overview/compare_ionome_distribution_C1_and_C2.pdf", width = 10, height = 7)
 multiplot(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19, cols = 5)
 dev.off()
 rm(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19)
 
-#### there might be some variation in Br and Cl...?
+#### t-test
 pvalues <- rep(NA, length(ion_name))
 names(pvalues) <- ion_name
 for(ion in ion_name){
@@ -177,7 +177,54 @@ for(ion in ion_name){
   pvalues[ion] <- t.test(ion_C1, ion_C2)$p.value
 }
 pvalues
-#### there are some significant differenes
+#### there are some significant differenes (Br, Cl, Cs, Fe, Mn, Mo, Ni, P, S, Sr, Zn)
+
+##### compare D1 and D2 ionome histogram #####
+#### warnings can be ignored
+#### compare D1(ind3) and D2(ind2) (there are smaller differences than D1(ind2) and D2(ind3))
+ion_name <- colnames(select(ionome_D1_ind3, -(line:IndID)))
+for(i in 1:length(ion_name)){
+  ion <- ion_name[i]
+  tmp_data <- ionome_D1_ind3 %>% 
+    bind_rows(ionome_D2_ind2) %>% 
+    mutate(BlockID = as.factor(BlockID)) %>% 
+    drop_na() %>%
+    select(ion, BlockID) %>% 
+    set_colnames(c("a", "BlockID"))
+  label <- tmp_data %>% nrow() %>% as.character()
+  label_x <- tmp_data %>% .[[1]] %>% max()
+  g <- tmp_data %>% 
+    ggplot(aes(x = a, fill = BlockID)) +
+    geom_histogram(bins = 23, position = "identity", alpha = 0.7) +
+    xlab(ion) +
+    annotate("text", x = label_x, y = 10, label = label)
+  assign(paste0("g", as.character(i)), g)
+  rm(tmp_data)
+}
+pdf("../data/plot/overview/compare_ionome_distribution_D1_and_D2.pdf", width = 10, height = 7)
+multiplot(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19, cols = 5)
+dev.off()
+rm(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19)
+
+#### t-test
+pvalues <- rep(NA, length(ion_name))
+names(pvalues) <- ion_name
+for(ion in ion_name){
+  ion_D1 <- ionome_D1_ind3 %>% 
+    select(ion) %>% 
+    drop_na() %>% 
+    .[[1]]
+  assign(paste0(ion, "_D1"), ion_D1)
+  ion_D2 <- ionome_D2_ind2 %>% 
+    select(ion) %>% 
+    drop_na() %>% 
+    .[[1]]
+  assign(paste0(ion, "_D2"), ion_D2)
+  pvalues[ion] <- t.test(ion_D1, ion_D2)$p.value
+}
+pvalues
+#### there are some significant differenes (Br, Fe, K, Ni, Zn)
+
 
 
 
