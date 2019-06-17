@@ -33,134 +33,75 @@ load("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/data_preprocess.R
 #### Cd and Rb have lots of 0 data, which seems to be due to failures.
 
 # C1 ionome histogram
-ion_name <- colnames(select(ionome_C1_ind2, -(line:IndID)))
-for(i in 1:length(ion_name)){
-  ion <- ion_name[i]
-  tmp_data <- ionome_C1_ind2 %>% 
-    bind_rows(ionome_C1_ind3) %>% 
-    mutate(IndID = as.factor(IndID)) %>% 
-    drop_na() %>%
-    select(ion, IndID) %>% 
-    set_colnames(c("a", "IndID"))
-  label <- tmp_data %>% nrow() %>% as.character()
-  label_x <- tmp_data %>% .[[1]] %>% max()
-  g <- tmp_data %>% 
-    ggplot(aes(x = a, fill = IndID)) +
-    geom_histogram(bins = 23, position = "identity", alpha = 0.7) +
-    xlab(ion) +
-    annotate("text", x = label_x, y = 10, label = label)
-  assign(paste0("g", as.character(i)), g)
-  rm(tmp_data)
-}
 pdf("../data/plot/overview/ionome_distribution_C1.pdf", width = 10, height = 7)
-multiplot(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19, cols = 5)
+ionome_C1_ind2 %>% 
+  bind_rows(ionome_C1_ind3) %>% 
+  mutate(IndID = as.factor(IndID)) %>% 
+  drop_na() %>%
+  select(-(line:PlotID)) %>% 
+  gather(key = "ion", value = value, -IndID) %>% 
+  ggplot(aes(x = value, fill = IndID)) +
+  geom_histogram(position = "identity", bins = 30, alpha = 0.7) + 
+  facet_wrap(~ ion, scales = "free")
 dev.off()
-rm(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19)
 
 # C2 ionome histogram
-ion_name <- colnames(select(ionome_C2_ind2, -(line:IndID)))
-for(i in 1:length(ion_name)){
-  ion <- ion_name[i]
-  tmp_data <- ionome_C2_ind2 %>% 
-    bind_rows(ionome_C2_ind3) %>% 
-    mutate(IndID = as.factor(IndID)) %>% 
-    drop_na() %>%
-    select(ion, IndID) %>% 
-    set_colnames(c("a", "IndID"))
-  label <- tmp_data %>% nrow() %>% as.character()
-  label_x <- tmp_data %>% .[[1]] %>% max()
-  g <- tmp_data %>% 
-    ggplot(aes(x = a, fill = IndID)) +
-    geom_histogram(bins = 23, position = "identity", alpha = 0.7) +
-    xlab(ion) +
-    annotate("text", x = label_x, y = 10, label = label)
-  assign(paste0("g", as.character(i)), g)
-  rm(tmp_data)
-}
 pdf("../data/plot/overview/ionome_distribution_C2.pdf", width = 10, height = 7)
-multiplot(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19, cols = 5)
+ionome_C2_ind2 %>% 
+  bind_rows(ionome_C2_ind3) %>% 
+  mutate(IndID = as.factor(IndID)) %>% 
+  drop_na() %>%
+  select(-(line:PlotID)) %>% 
+  gather(key = "ion", value = value, -IndID) %>% 
+  ggplot(aes(x = value, fill = IndID)) +
+  geom_histogram(position = "identity", bins = 30, alpha = 0.7) + 
+  facet_wrap(~ ion, scales = "free")
 dev.off()
-rm(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19)
 
 # D1 ionome histogram
-ion_name <- colnames(select(ionome_D1_ind2, -(line:IndID)))
-for(i in 1:length(ion_name)){
-  ion <- ion_name[i]
-  tmp_data <- ionome_D1_ind2 %>% 
-    bind_rows(ionome_D1_ind3) %>% 
-    mutate(IndID = as.factor(IndID)) %>% 
-    drop_na() %>%
-    select(ion, IndID) %>% 
-    set_colnames(c("a", "IndID"))
-  label <- tmp_data %>% nrow() %>% as.character()
-  label_x <- tmp_data %>% .[[1]] %>% max()
-  g <- tmp_data %>% 
-    ggplot(aes(x = a, fill = IndID)) +
-    geom_histogram(bins = 23, position = "identity", alpha = 0.7) +
-    xlab(ion) +
-    annotate("text", x = label_x, y = 10, label = label)
-  assign(paste0("g", as.character(i)), g)
-  rm(tmp_data)
-}
 pdf("../data/plot/overview/ionome_distribution_D1.pdf", width = 10, height = 7)
-multiplot(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19, cols = 5)
+ionome_D1_ind2 %>% 
+  bind_rows(ionome_D1_ind3) %>% 
+  mutate(IndID = as.factor(IndID)) %>% 
+  drop_na() %>%
+  select(-(line:PlotID)) %>% 
+  gather(key = "ion", value = value, -IndID) %>% 
+  ggplot(aes(x = value, fill = IndID)) +
+  geom_histogram(position = "identity", bins = 30, alpha = 0.7) + 
+  facet_wrap(~ ion, scales = "free")
 dev.off()
-rm(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19)
 
 # D2 ionome histogram
-ion_name <- colnames(select(ionome_D2_ind2, -(line:IndID)))
-for(i in 1:length(ion_name)){
-  ion <- ion_name[i]
-  tmp_data <- ionome_D2_ind2 %>% 
-    bind_rows(ionome_D2_ind3) %>% 
-    mutate(IndID = as.factor(IndID)) %>% 
-    drop_na() %>%
-    select(ion, IndID) %>% 
-    set_colnames(c("a", "IndID"))
-  label <- tmp_data %>% nrow() %>% as.character()
-  label_x <- tmp_data %>% .[[1]] %>% max()
-  g <- tmp_data %>% 
-    ggplot(aes(x = a, fill = IndID)) +
-    geom_histogram(bins = 23, position = "identity", alpha = 0.7) +
-    xlab(ion) +
-    annotate("text", x = label_x, y = 10, label = label)
-  assign(paste0("g", as.character(i)), g)
-  rm(tmp_data)
-}
 pdf("../data/plot/overview/ionome_distribution_D2.pdf", width = 10, height = 7)
-multiplot(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19, cols = 5)
+ionome_D2_ind2 %>% 
+  bind_rows(ionome_D2_ind3) %>% 
+  mutate(IndID = as.factor(IndID)) %>% 
+  drop_na() %>%
+  select(-(line:PlotID)) %>% 
+  gather(key = "ion", value = value, -IndID) %>% 
+  ggplot(aes(x = value, fill = IndID)) +
+  geom_histogram(position = "identity", bins = 30, alpha = 0.7) + 
+  facet_wrap(~ ion, scales = "free")
 dev.off()
-rm(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19)
-
 
 
 ##### compare C1 and C2 ionome histogram #####
 # warnings can be ignored
-ion_name <- colnames(select(ionome_C1_ind2, -(line:IndID)))
-for(i in 1:length(ion_name)){
-  ion <- ion_name[i]
-  tmp_data <- ionome_C1_ind2 %>% 
-    bind_rows(ionome_C2_ind2) %>% 
-    mutate(BlockID = as.factor(BlockID)) %>% 
-    drop_na() %>%
-    select(ion, BlockID) %>% 
-    set_colnames(c("a", "BlockID"))
-  label <- tmp_data %>% nrow() %>% as.character()
-  label_x <- tmp_data %>% .[[1]] %>% max()
-  g <- tmp_data %>% 
-    ggplot(aes(x = a, fill = BlockID)) +
-    geom_histogram(bins = 23, position = "identity", alpha = 0.7) +
-    xlab(ion) +
-    annotate("text", x = label_x, y = 10, label = label)
-  assign(paste0("g", as.character(i)), g)
-  rm(tmp_data)
-}
+
 pdf("../data/plot/overview/compare_ionome_distribution_C1_and_C2.pdf", width = 10, height = 7)
-multiplot(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19, cols = 5)
+ionome_C1_ind2 %>% 
+  bind_rows(ionome_C2_ind2) %>% 
+  mutate(BlockID = as.factor(BlockID)) %>% 
+  drop_na() %>%
+  select(-line, -PlotID) %>% 
+  gather(key = "ion", value = value, -(BlockID:IndID)) %>% 
+  ggplot(aes(x = value, fill = BlockID)) +
+  geom_histogram(position = "identity", bins = 23, alpha = 0.7) + 
+  facet_wrap(~ ion, scales = "free")
 dev.off()
-rm(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19)
 
 #### t-test
+ion_name <- colnames(select(ionome_C1_ind2, -(line:IndID)))
 pvalues <- rep(NA, length(ion_name))
 names(pvalues) <- ion_name
 for(ion in ion_name){
@@ -182,31 +123,21 @@ pvalues
 ##### compare D1 and D2 ionome histogram #####
 #### warnings can be ignored
 #### compare D1(ind3) and D2(ind2) (there are smaller differences than D1(ind2) and D2(ind3))
-ion_name <- colnames(select(ionome_D1_ind3, -(line:IndID)))
-for(i in 1:length(ion_name)){
-  ion <- ion_name[i]
-  tmp_data <- ionome_D1_ind3 %>% 
-    bind_rows(ionome_D2_ind2) %>% 
-    mutate(BlockID = as.factor(BlockID)) %>% 
-    drop_na() %>%
-    select(ion, BlockID) %>% 
-    set_colnames(c("a", "BlockID"))
-  label <- tmp_data %>% nrow() %>% as.character()
-  label_x <- tmp_data %>% .[[1]] %>% max()
-  g <- tmp_data %>% 
-    ggplot(aes(x = a, fill = BlockID)) +
-    geom_histogram(bins = 23, position = "identity", alpha = 0.7) +
-    xlab(ion) +
-    annotate("text", x = label_x, y = 10, label = label)
-  assign(paste0("g", as.character(i)), g)
-  rm(tmp_data)
-}
+
 pdf("../data/plot/overview/compare_ionome_distribution_D1_and_D2.pdf", width = 10, height = 7)
-multiplot(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19, cols = 5)
+ionome_D1_ind3 %>% 
+  bind_rows(ionome_D2_ind2) %>% 
+  mutate(BlockID = as.factor(BlockID)) %>% 
+  drop_na() %>%
+  select(-line, -PlotID) %>% 
+  gather(key = "ion", value = value, -(BlockID:IndID)) %>% 
+  ggplot(aes(x = value, fill = BlockID)) +
+  geom_histogram(position = "identity", bins = 23, alpha = 0.7) + 
+  facet_wrap(~ ion, scales = "free")
 dev.off()
-rm(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17,g18,g19)
 
 #### t-test
+ion_name <- colnames(select(ionome_D1_ind3, -(line:IndID)))
 pvalues <- rep(NA, length(ion_name))
 names(pvalues) <- ion_name
 for(ion in ion_name){
@@ -226,27 +157,62 @@ pvalues
 #### there are some significant differenes (Br, Fe, K, Ni, Zn)
 
 
+# compare any (Env, ind) combination
+# setting
+Env1 <- "C1"; ind1 <- "2"; Env2 <- "C2"; ind2 <- "2";
+comp <- "BlockID"
+#
+data1 <- paste0("ionome_", Env1, "_ind", ind1)
+data2 <- paste0("ionome_", Env2, "_ind", ind2)
 
-
-all_ion <- bind_rows(list(ionome_C1_ind2,ionome_C1_ind3,ionome_C2_ind2,ionome_C2_ind3,ionome_D1_ind2,ionome_D1_ind3,ionome_D2_ind2,ionome_D2_ind3)) %>% 
-  mutate(BlockID = as.factor(BlockID))  
-ion_name <- colnames(select(all_ion, -(line:IndID)))
-for(i in 1:2){
-  ion <- ion_name[i]
-  tmp_data <- all_ion %>% 
+# histogram
+if(comp == "IndID"){
+  data1 %>% 
+    get() %>% 
+    bind_rows(get(data2)) %>% 
+    mutate(BlockID = as.factor(BlockID), IndID = as.factor(IndID)) %>% 
     drop_na() %>%
-    select(ion, BlockID) %>% 
-    set_colnames("a")
-  label <- tmp_data %>% nrow() %>% as.character()
-  label_x <- tmp_data %>% .[[1]] %>% max()
-  g <- tmp_data %>% 
-    ggplot(aes(x=a, fill = BlockID)) +
-    geom_histogram(bins = 23, position = "identity", alpha = 0.5) +
-    xlab(ion) +
-    scale_fill_manual(values = c("#0000ee", "#0000ee", "#ee0000", "#ee0000"))
-  assign(paste0("g", as.character(i)), g)
-  rm(tmp_data)
+    select(-line, -PlotID) %>% 
+    gather(key = "ion", value = value, -(BlockID:IndID)) %>% 
+    ggplot(aes(x = value, fill = IndID)) +                             ############## choose fill = IndID or BlockID
+    geom_histogram(position = "identity", bins = 23, alpha = 0.7) + 
+    facet_wrap(~ ion, scales = "free")
+}else{
+  data1 %>% 
+    get() %>% 
+    bind_rows(get(data2)) %>% 
+    mutate(BlockID = as.factor(BlockID), IndID = as.factor(IndID)) %>% 
+    drop_na() %>%
+    select(-line, -PlotID) %>% 
+    gather(key = "ion", value = value, -(BlockID:IndID)) %>% 
+    ggplot(aes(x = value, fill = BlockID)) +                             ############## choose fill = IndID or BlockID
+    geom_histogram(position = "identity", bins = 23, alpha = 0.7) + 
+    facet_wrap(~ ion, scales = "free")
 }
+
+# t-test
+ion_name <- data1 %>% 
+  get() %>% 
+  select(-(line:IndID)) %>% 
+  colnames()
+pvalues <- rep(NA, length(ion_name))
+names(pvalues) <- ion_name
+for(ion in ion_name){
+  ion_Env1 <- data1 %>% 
+    get() %>% 
+    select(ion) %>% 
+    drop_na() %>% 
+    .[[1]]
+  ion_Env2 <- data2 %>% 
+    get() %>% 
+    select(ion) %>% 
+    drop_na() %>% 
+    .[[1]]
+  pvalues[ion] <- t.test(ion_Env1, ion_Env2)$p.value
+}
+pvalues
+
+
 
 # # 主試験20180621
 # # 茎長
