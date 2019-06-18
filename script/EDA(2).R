@@ -213,6 +213,86 @@ for(ion in ion_name){
 pvalues
 
 
+# C1 C2 Phenotype histogram
+pdf("../data/plot/overview/compare_Phenotype_distribution_C1_and_C2_histogram.pdf", width = 10, height = 7)
+main200 %>% 
+  filter(block %in% c("C1", "C2")) %>% 
+  select(-(GrowthStage), -NodeNmb, -PlantHeight_0722_cm, -PlantHeight_0821_cm, -PlantHeight_0903_cm, -StemNmb, -StemLength_cm) %>% 
+  gather(key = "phenotype", value = "value", -(ID:ind_nmb)) %>% 
+  ggplot(aes(x = value, fill = block)) +
+  geom_histogram(position = "identity", alpha = 0.7) +
+  facet_wrap(~ phenotype, scale = "free")
+dev.off()
+
+# C1 C2 Phenotype bar
+pdf("../data/plot/overview/compare_Phenotype_distribution_C1_and_C2_bar.pdf", width = 10, height = 7)
+main200 %>% 
+  filter(block %in% c("C1", "C2")) %>% 
+  select(c(ID:ind_nmb), GrowthStage, NodeNmb, PlantHeight_0722_cm, PlantHeight_0821_cm, PlantHeight_0903_cm, StemNmb, StemLength_cm) %>% 
+  gather(key = "phenotype", value = "value", -(ID:ind_nmb)) %>% 
+  ggplot(aes(x = value, fill = block)) +
+  geom_bar(position = "identity", alpha = 0.7) +
+  facet_wrap(~ phenotype, scale = "free")
+dev.off()
+
+# D1 D2 Phenotype histogram
+pdf("../data/plot/overview/compare_Phenotype_distribution_D1_and_D2_histogram.pdf", width = 10, height = 7)
+main200 %>% 
+  filter(block %in% c("D1", "D2")) %>% 
+  select(-(GrowthStage), -NodeNmb, -PlantHeight_0722_cm, -PlantHeight_0821_cm, -PlantHeight_0903_cm, -StemNmb, -StemLength_cm) %>% 
+  gather(key = "phenotype", value = "value", -(ID:ind_nmb)) %>% 
+  ggplot(aes(x = value, fill = block)) +
+  geom_histogram(position = "identity", alpha = 0.7) +
+  facet_wrap(~ phenotype, scale = "free")
+dev.off()
+
+# D1 D2 Phenotype bar
+pdf("../data/plot/overview/compare_Phenotype_distribution_D1_and_D2_bar.pdf", width = 10, height = 7)
+main200 %>% 
+  filter(block %in% c("D1", "D2")) %>% 
+  select(c(ID:ind_nmb), GrowthStage, NodeNmb, PlantHeight_0722_cm, PlantHeight_0821_cm, PlantHeight_0903_cm, StemNmb, StemLength_cm) %>% 
+  gather(key = "phenotype", value = "value", -(ID:ind_nmb)) %>% 
+  ggplot(aes(x = value, fill = block)) +
+  geom_bar(position = "identity", alpha = 0.7) +
+  facet_wrap(~ phenotype, scale = "free")
+dev.off()
+
+# C1 D1 Phenotype histogram
+pdf("../data/plot/overview/compare_Phenotype_distribution_C1_and_D1_histogram.pdf", width = 10, height = 7)
+main200 %>% 
+  filter(block %in% c("C1", "D1")) %>% 
+  select(-(GrowthStage), -NodeNmb, -PlantHeight_0722_cm, -PlantHeight_0821_cm, -PlantHeight_0903_cm, -StemNmb, -StemLength_cm) %>% 
+  gather(key = "phenotype", value = "value", -(ID:ind_nmb)) %>% 
+  ggplot(aes(x = value, fill = block)) +
+  geom_histogram(position = "identity", alpha = 0.7) +
+  facet_wrap(~ phenotype, scale = "free")
+dev.off()
+
+# C1 D1 Phenotype bar
+pdf("../data/plot/overview/compare_Phenotype_distribution_C1_and_D1_bar.pdf", width = 10, height = 7)
+main200 %>% 
+  filter(block %in% c("C1", "D1")) %>% 
+  select(c(ID:ind_nmb), GrowthStage, NodeNmb, PlantHeight_0722_cm, PlantHeight_0821_cm, PlantHeight_0903_cm, StemNmb, StemLength_cm) %>% 
+  gather(key = "phenotype", value = "value", -(ID:ind_nmb)) %>% 
+  ggplot(aes(x = value, fill = block)) +
+  geom_bar(position = "identity", alpha = 0.7) +
+  facet_wrap(~ phenotype, scale = "free")
+dev.off()
+
+# 
+
+ionome_C1_ind2 %>% 
+  bind_rows(ionome_C1_ind3, ionome_C2_ind2, ionome_C2_ind3, ionome_D1_ind2, ionome_D1_ind3, ionome_D2_ind2, ionome_D2_ind3) %>% 
+  mutate(block = as.factor(BlockID), LineID = as.factor(line), ind_nmb = IndID, plot_nmb = PlotID) %>% 
+  select(-BlockID, -line, -IndID, -PlotID)
+  left_join(main200)
+main200 %>% 
+  filter(block == "C1") %>% 
+  mutate(line = as.integer(LineID), PlotID = plot_nmb, IndID = ind_nmb) %>% 
+  select(-LineID, -plot_nmb, -ind_nmb) %>% 
+  left_join(ionome_C1_ind2_kari) %>% 
+  select(IndID)
+  
 
 # # 主試験20180621
 # # 茎長
