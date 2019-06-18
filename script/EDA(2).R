@@ -13,14 +13,14 @@ require(grid)
 
 # read data
 
-ionome_C1_ind2 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_C1_ind2_v3.csv"))
-ionome_C2_ind2 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_C2_ind2_v3.csv"))
-ionome_D1_ind2 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_D1_ind2_v3.csv"))
-ionome_D2_ind2 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_D2_ind2_v3.csv"))
-ionome_C1_ind3 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_C1_ind3_v3.csv"))
-ionome_C2_ind3 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_C2_ind3_v3.csv"))
-ionome_D1_ind3 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_D1_ind3_v3.csv"))
-ionome_D2_ind3 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_D2_ind3_v3.csv"))
+ionome_C1_ind2 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_C1_ind2_v3_preprocess.csv"))
+ionome_C2_ind2 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_C2_ind2_v3_preprocess.csv"))
+ionome_D1_ind2 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_D1_ind2_v3_preprocess.csv"))
+ionome_D2_ind2 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_D2_ind2_v3_preprocess.csv"))
+ionome_C1_ind3 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_C1_ind3_v3_preprocess.csv"))
+ionome_C2_ind3 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_C2_ind3_v3_preprocess.csv"))
+ionome_D1_ind3 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_D1_ind3_v3_preprocess.csv"))
+ionome_D2_ind3 <- as.tibble(read.csv("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/ionome_2018maintest(200line_ionometimeline5_endophyte)/2018_Sep_D2_ind3_v3_preprocess.csv"))
 
 load("../data/preprocess_data/Phenotype/2018/Tottori2_maintest/data_preprocess.R") # main200, main_plot, main_plantheight
 
@@ -281,17 +281,19 @@ dev.off()
 
 # 
 
-ionome_C1_ind2 %>% 
+ion_main_join <- ionome_C1_ind2 %>% 
   bind_rows(ionome_C1_ind3, ionome_C2_ind2, ionome_C2_ind3, ionome_D1_ind2, ionome_D1_ind3, ionome_D2_ind2, ionome_D2_ind3) %>% 
-  mutate(block = as.factor(BlockID), LineID = as.factor(line), ind_nmb = IndID, plot_nmb = PlotID) %>% 
-  select(-BlockID, -line, -IndID, -PlotID)
-  left_join(main200)
-main200 %>% 
-  filter(block == "C1") %>% 
-  mutate(line = as.integer(LineID), PlotID = plot_nmb, IndID = ind_nmb) %>% 
-  select(-LineID, -plot_nmb, -ind_nmb) %>% 
-  left_join(ionome_C1_ind2_kari) %>% 
-  select(IndID)
+  mutate(LineID = as.factor(LineID)) %>% 
+  select(-LineID) %>% 
+  left_join(main200) %>% 
+  mutate(LineID = as.factor(LineID), BlockID = as.factor(BlockID), IndID = as.factor(IndID))
+data.tmp <- ion_main_join %>% 
+  select(As:Zn, NodeNmb) %>% 
+  as.data.frame() 
+model <- lm(NodeNmb ~ ., data = data.tmp)
+stepresult <- step(model)
+stepresult
+
   
 
 # # 主試験20180621
