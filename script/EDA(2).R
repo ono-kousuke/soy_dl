@@ -2,10 +2,9 @@
 
 # packages
 
-require(Rmisc)
 require(tidyverse)
 require(magrittr)
-require(grid)
+require(caret)
 
 
 # load functions
@@ -159,7 +158,7 @@ pvalues
 
 # compare any (Env, ind) combination
 # setting
-Env1 <- "C1"; ind1 <- "2"; Env2 <- "C2"; ind2 <- "2";
+Env1 <- "D1"; ind1 <- "2"; Env2 <- "D2"; ind2 <- "2";
 comp <- "BlockID"
 #
 data1 <- paste0("ionome_", Env1, "_ind", ind1)
@@ -279,8 +278,7 @@ main200 %>%
   facet_wrap(~ phenotype, scale = "free")
 dev.off()
 
-# 
-
+# regression of phenotype on ionome
 ion_main_join <- ionome_C1_ind2 %>% 
   bind_rows(ionome_C1_ind3, ionome_C2_ind2, ionome_C2_ind3, ionome_D1_ind2, ionome_D1_ind3, ionome_D2_ind2, ionome_D2_ind3) %>% 
   mutate(LineID = as.factor(LineID)) %>% 
@@ -289,12 +287,106 @@ ion_main_join <- ionome_C1_ind2 %>%
   mutate(LineID = as.factor(LineID), BlockID = as.factor(BlockID), IndID = as.factor(IndID))
 data.tmp <- ion_main_join %>% 
   select(As:Zn, NodeNmb) %>% 
+  drop_na() %>% 
   as.data.frame() 
+
+models <- c("lm", "ridge", "lasso", "pcr", "pls")   # methods for itelator
+mse <- rep(NA, length(models))   # vector for each mse
+names(mse) <- models
+
+# train ("lm", "ridge", "lasso", "pcr", "pls")
+for(method in models){
+  tr.control <- trainControl(method = "cv", number = 10)
+  model <- data.tmp %>% 
+    train(NodeNmb ~ ., data = ., method = method, 
+          preProces = "scale", trControl = tr.control)
+  #mse[method] <- mean((select(data.tmp, NodeNmb) - predict(model, test.data))^2)
+  print(model)
+}
 model <- lm(NodeNmb ~ ., data = data.tmp)
 stepresult <- step(model)
 stepresult
 
+# ionome correlation
+cor1 <- ionome_C1_ind2 %>% 
+  select(-(LineID:IndID)) %>% 
+  drop_na() %>% 
+  scale() %>% 
+  cor()
   
+corall <- ionome_C1_ind2 %>% 
+  bind_rows(ionome_C1_ind3, ionome_C2_ind2, ionome_C2_ind3, ionome_D1_ind2, ionome_D1_ind3, ionome_D2_ind2, ionome_D2_ind3) %>% 
+  select(-(LineID:IndID)) %>% 
+  drop_na() %>% 
+  scale() %>% 
+  cor()
+
+(cor1 - corall) %>% 
+  heatmap(Colv = NA, Rowv = NA)
+
+# scatter plot ind2 vs ind3 of ionome data
+ionome_D1_ind2 %>% 
+  bind_rows(ionome_D1_ind3) %>% 
+  mutate(IndID = as.factor(IndID)) %>% 
+  drop_na() %>% 
+  select(-(BlockID:PlotID)) %>% 
+  gather(key = "ion", value = value, -(LineID:IndID)) %>% 
+  spread(key = IndID, value = value) %>% 
+  drop_na() %>% 
+  rename(ind2 = '2', ind3 = '3') %>% 
+  ggplot(aes(x = ind2, y = ind3)) +
+  geom_point() + 
+  facet_wrap(~ ion, scales = "free")
+
+# correlation
+ionome_D1_ind2 %>% 
+  bind_rows(ionome_D1_ind3) %>% 
+  mutate(IndID = as.factor(IndID)) %>% 
+  drop_na() %>% 
+  select(-(BlockID:PlotID)) %>% 
+  gather(key = "ion", value = value, -(LineID:IndID)) %>% 
+  spread(key = IndID, value = value) %>%
+  drop_na() %>% 
+  rename(ind2 = '2', ind3 = '3') %>% 
+  group_by(ion) %>% 
+  do(
+    cor = cor(.$ind2, .$ind3)
+  ) %>% 
+  select(cor) %>% 
+  .[[1]]
+#### low correlation between ind2 and ind3, useless!!
+
+
+# scatter plot ind2 vs ind3 of phenotype data
+main200 %>% 
+  filter(IndID %in% c(2, 3), BlockID == "C1") %>% 
+  mutate(IndID = as.factor(IndID)) %>% 
+  select(-(ID:BlockID)) %>% 
+  gather(key = "Phenotype", value = value, -(PlotID:IndID)) %>% 
+  spread(key = IndID, value = value) %>% 
+  drop_na() %>% 
+  rename(ind2 = '2', ind3 = '3') %>% 
+  ggplot(aes(x = ind2, y = ind3)) +
+  geom_point() + 
+  facet_wrap(~ Phenotype, scales = "free")
+
+# correlation
+main200 %>% 
+  filter(IndID %in% c(2, 3), BlockID == "C1") %>% 
+  mutate(IndID = as.factor(IndID)) %>% 
+  select(-(ID:BlockID)) %>% 
+  gather(key = "Phenotype", value = value, -(PlotID:IndID)) %>% 
+  spread(key = IndID, value = value) %>% 
+  drop_na() %>% 
+  rename(ind2 = '2', ind3 = '3') %>% 
+  group_by(Phenotype) %>% 
+  do(
+    cor = cor(.$ind2, .$ind3)
+  ) %>% 
+  select(cor) %>% 
+  .[[1]]
+#### high correlation
+
 
 # # 主試験20180621
 # # 茎長
